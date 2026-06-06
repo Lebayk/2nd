@@ -1,0 +1,195 @@
+@import 'tailwindcss';
+@import 'katex/dist/katex.min.css';
+
+/* ============================================================
+   DESIGN TOKENS — Tailwind v4 @theme
+   ============================================================ */
+@theme {
+  /* surfaces */
+  --color-ink: #0d0f14;
+  --color-ink-2: #13161d;
+  --color-ink-3: #1a1e27;
+  --color-ink-4: #222733;
+
+  /* text */
+  --color-txt: #eae6dd;
+  --color-dim: #9aa1ad;
+  --color-faint: #646b78;
+
+  /* gold accents */
+  --color-gold: #d8b06a;
+  --color-gold-2: #e9c98a;
+
+  /* domain colors */
+  --color-algebre: #6ee7b7;
+  --color-analyse: #7dd3fc;
+  --color-geometrie: #c4b5fd;
+  --color-proba: #f9a8c4;
+  --color-python: #fcd34d;
+  --color-revision: #cbd5e1;
+  --color-ds: #fb7185;
+
+  /* fonts */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* easing */
+  --ease-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* animations */
+  --animate-shimmer: shimmer 2.5s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-ink);
+    color: var(--color-txt);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    min-height: 100dvh;
+  }
+  /* ambient gradients + grain, fixed behind everything */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(60% 40% at 80% -5%, rgba(216, 176, 106, 0.1), transparent 70%),
+      radial-gradient(50% 50% at 0% 100%, rgba(125, 211, 252, 0.06), transparent 70%);
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection {
+    background: rgba(216, 176, 106, 0.28);
+    color: #fff;
+  }
+  /* scrollbar */
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-ink-4);
+    border-radius: 99px;
+    border: 3px solid var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2e3442;
+  }
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+}
+
+/* ============================================================
+   UTILITIES / COMPONENT CLASSES
+   ============================================================ */
+@layer components {
+  .card {
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: var(--color-ink-2);
+    border-radius: 16px;
+  }
+  .card-hover {
+    transition: all 0.25s var(--ease-spring);
+  }
+  .card-hover:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+  }
+  .kbd {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: var(--color-ink-3);
+    border-radius: 6px;
+    padding: 2px 6px;
+    color: var(--color-dim);
+  }
+  .gold-text {
+    background: linear-gradient(
+      100deg,
+      var(--color-gold) 20%,
+      #fff7e6 40%,
+      var(--color-gold-2) 60%,
+      var(--color-gold) 80%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* katex sizing inside cards */
+.katex {
+  font-size: 1.04em;
+}
+.katex-display {
+  margin: 0.4em 0;
+}
+
+/* hide number input spinners */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

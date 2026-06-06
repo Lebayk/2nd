@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planning — Maths Première Spé · Manuel Belin · Été 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0f14; --ink-2:#13161d; --ink-3:#1a1e27;
+    --line:rgba(255,255,255,.07); --line-2:rgba(255,255,255,.12);
+    --txt:#eae6dd; --dim:#9aa1ad; --faint:#646b78;
+    --gold:#d8b06a; --gold-2:#e9c98a; --gold-soft:rgba(216,176,106,.14);
+    --algebre:#6ee7b7; --analyse:#7dd3fc; --geometrie:#c4b5fd;
+    --proba:#f9a8c4; --python:#fcd34d; --revision:#cbd5e1; --ds:#fb7185;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--ink); color:var(--txt); font-family:"Hanken Grotesk",sans-serif;
+    line-height:1.5; -webkit-font-smoothing:antialiased; position:relative; overflow-x:hidden}
+  body::before{content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:radial-gradient(60% 40% at 80% -5%, rgba(216,176,106,.10), transparent 70%),
+               radial-gradient(50% 50% at 0% 100%, rgba(125,211,252,.06), transparent 70%)}
+  body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.035; mix-blend-mode:overlay;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .wrap{position:relative; z-index:1; max-width:1000px; margin:0 auto; padding:56px 24px 80px}
+
+  /* HERO */
+  .hero{margin-bottom:42px}
+  .kicker{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.28em;
+    text-transform:uppercase; color:var(--gold); margin-bottom:18px; display:flex; align-items:center; gap:10px}
+  .kicker::before{content:""; width:26px; height:1px; background:var(--gold); opacity:.6}
+  h1{font-family:"Fraunces",serif; font-weight:600; font-size:clamp(2.4rem,7vw,4.4rem);
+    line-height:.98; letter-spacing:-.02em; margin-bottom:18px}
+  h1 em{font-style:italic; font-weight:500; color:var(--gold-2)}
+  .sub{color:var(--dim); font-size:1.05rem; max-width:48ch; margin-bottom:14px}
+  .book{font-family:"JetBrains Mono",monospace; font-size:.8rem; color:var(--gold-2);
+    background:var(--gold-soft); border:1px solid var(--gold-soft); border-radius:8px; padding:8px 14px;
+    display:inline-block; margin-bottom:28px}
+  .stats{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:32px}
+  .stat{font-family:"JetBrains Mono",monospace; font-size:.82rem; border:1px solid var(--line);
+    background:var(--ink-2); border-radius:999px; padding:9px 16px; color:var(--dim)}
+  .stat b{color:var(--txt); font-weight:500}
+  .stat.cd{border-color:var(--gold-soft); background:var(--gold-soft); color:var(--gold-2)}
+  .stat.cd b{color:var(--gold-2); font-size:1rem}
+
+  .pbar{border:1px solid var(--line); background:var(--ink-2); border-radius:16px; padding:20px 22px}
+  .phead{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px}
+  .phead .lab{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); font-family:"JetBrains Mono",monospace}
+  .phead #pct{font-family:"Fraunces",serif; font-size:1.7rem; font-weight:600; color:var(--gold-2)}
+  .track{height:9px; background:var(--ink-3); border-radius:99px; overflow:hidden}
+  .fill{height:100%; width:0%; border-radius:99px; background:linear-gradient(90deg,var(--gold),var(--gold-2));
+    box-shadow:0 0 16px rgba(216,176,106,.4); transition:width .5s cubic-bezier(.2,.8,.2,1)}
+  .psub{display:flex; justify-content:space-between; align-items:center; margin-top:13px}
+  .psub #counts{font-family:"JetBrains Mono",monospace; font-size:.78rem; color:var(--dim)}
+  #reset{background:none; border:1px solid var(--line-2); color:var(--dim); font-family:"JetBrains Mono",monospace;
+    font-size:.72rem; padding:6px 12px; border-radius:8px; cursor:pointer; transition:.2s}
+  #reset:hover{border-color:var(--ds); color:var(--ds)}
+
+  .sec-title{font-family:"JetBrains Mono",monospace; font-size:.74rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--faint); margin:48px 0 18px; display:flex; align-items:center; gap:14px}
+  .sec-title::after{content:""; flex:1; height:1px; background:var(--line)}
+
+  /* MÉTHODE */
+  .days{display:grid; grid-template-columns:repeat(auto-fit,minmax(124px,1fr)); gap:10px}
+  .day{border:1px solid var(--line); background:var(--ink-2); border-radius:12px; padding:14px 14px 16px; transition:.2s}
+  .day:hover{border-color:var(--line-2); transform:translateY(-2px)}
+  .day .j{font-family:"Fraunces",serif; font-size:1.2rem; color:var(--gold); font-weight:600}
+  .day .nm{font-weight:600; font-size:.92rem; margin:2px 0 4px}
+  .day .ds-{font-size:.78rem; color:var(--faint); line-height:1.35}
+  .day.rest .j{color:var(--analyse)}
+
+  /* PHASES */
+  .phase{margin-top:52px}
+  .phase-head{display:flex; align-items:baseline; gap:16px; margin-bottom:8px; flex-wrap:wrap}
+  .phase-head .ph{font-family:"Fraunces",serif; font-size:1.7rem; font-weight:600; letter-spacing:-.01em}
+  .phase-head .pn{color:var(--dim); font-size:.95rem}
+  .phase-rule{height:1px; background:linear-gradient(90deg,var(--gold-soft),transparent); margin-bottom:22px}
+
+  /* WEEK CARDS */
+  .week{display:flex; border:1px solid var(--line); border-radius:16px; background:var(--ink-2);
+    margin-bottom:14px; overflow:hidden; transition:.25s; opacity:0; transform:translateY(10px); animation:rise .5s forwards}
+  @keyframes rise{to{opacity:1; transform:none}}
+  .week:hover{border-color:var(--line-2); background:var(--ink-3)}
+  .week.current{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold-soft), 0 8px 40px rgba(216,176,106,.08)}
+  .week.done{opacity:.62}
+  .week.done:hover{opacity:1}
+  .week.express{border-style:dashed}
+
+  .rail{flex:0 0 142px; padding:20px 18px; border-right:1px solid var(--line); background:rgba(255,255,255,.012);
+    display:flex; flex-direction:column; gap:6px; position:relative}
+  .rail .wn{font-family:"Fraunces",serif; font-size:2.5rem; line-height:.85; font-weight:600; color:var(--dom,var(--gold))}
+  .rail .wn small{font-size:.78rem; color:var(--faint); font-weight:400; font-family:"JetBrains Mono",monospace; display:block; letter-spacing:.1em; margin-bottom:2px}
+  .rail .wn.tiny{font-size:1rem; line-height:1.2}
+  .rail .wd{font-family:"JetBrains Mono",monospace; font-size:.74rem; color:var(--dim); margin-top:4px}
+  .rail .dom{font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; font-family:"JetBrains Mono",monospace;
+    color:var(--dom); margin-top:auto; padding-top:8px; font-weight:500}
+  .rail .wc{font-family:"JetBrains Mono",monospace; font-size:.7rem; color:var(--faint); margin-top:4px}
+  .rail .live{position:absolute; top:14px; right:14px; font-family:"JetBrains Mono",monospace; font-size:.6rem;
+    letter-spacing:.08em; color:var(--gold-2); text-transform:uppercase; background:var(--gold-soft); padding:3px 7px; border-radius:6px}
+
+  .wbody{flex:1; padding:18px 22px 20px; min-width:0}
+  .ch-no{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--dom,var(--gold)); margin-bottom:3px}
+  .wtitle{font-family:"Fraunces",serif; font-size:1.3rem; font-weight:600; margin-bottom:6px; letter-spacing:-.01em}
+  .wpages{font-family:"JetBrains Mono",monospace; font-size:.74rem; color:var(--faint); margin-bottom:14px; display:flex; gap:14px; flex-wrap:wrap}
+  .wpages .exo{color:var(--gold-2)}
+  .topics{list-style:none; display:flex; flex-direction:column; gap:2px}
+  .topics li label{display:flex; align-items:flex-start; gap:11px; padding:7px 8px; border-radius:8px; cursor:pointer; transition:background .15s}
+  .topics li label:hover{background:rgba(255,255,255,.025)}
+  .topics input{position:absolute; opacity:0; width:0; height:0}
+  .box{flex:0 0 18px; height:18px; margin-top:1px; border:1.5px solid var(--line-2); border-radius:6px; position:relative; transition:.18s}
+  .topics input:checked + .box{background:var(--dom,var(--gold)); border-color:var(--dom,var(--gold))}
+  .box::after{content:""; position:absolute; left:5px; top:1.5px; width:5px; height:9px; border:solid var(--ink);
+    border-width:0 2px 2px 0; transform:rotate(45deg) scale(0); transition:transform .18s}
+  .topics input:checked + .box::after{transform:rotate(45deg) scale(1)}
+  .tx{font-size:.92rem; color:var(--txt); transition:.18s; flex:1}
+  .tp{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--faint); white-space:nowrap; padding-left:8px}
+  .topics input:checked ~ .tx{color:var(--faint); text-decoration:line-through; text-decoration-color:var(--faint)}
+
+  .wnote{margin-top:13px; font-size:.82rem; border-radius:9px; padding:9px 13px; display:flex; gap:9px; align-items:flex-start}
+  .wnote.ok{border:1px solid rgba(110,231,183,.3); background:rgba(110,231,183,.06); color:#9ff0cf}
+  .wnote.tip{border:1px solid var(--gold-soft); background:var(--gold-soft); color:var(--gold-2)}
+  .wnote.py{border:1px solid rgba(252,211,77,.28); background:rgba(252,211,77,.06); color:#fde68a}
+
+  .ds{margin-top:14px; display:flex; align-items:flex-start; gap:10px; border:1px dashed rgba(251,113,133,.4);
+    background:rgba(251,113,133,.06); border-radius:10px; padding:11px 14px}
+  .ds .ic{font-size:1rem}
+  .ds .dt{font-size:.86rem; color:#fda4b8}
+  .ds .dt b{color:var(--ds); font-family:"JetBrains Mono",monospace; font-size:.78rem; letter-spacing:.05em; display:block; text-transform:uppercase; margin-bottom:2px}
+
+  footer{margin-top:56px; border-top:1px solid var(--line); padding-top:32px}
+  .tips{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-bottom:26px}
+  .tip{border:1px solid var(--line); background:var(--ink-2); border-radius:14px; padding:18px 20px}
+  .tip h4{font-family:"Fraunces",serif; font-size:1.05rem; margin-bottom:8px; color:var(--gold-2); display:flex; gap:8px; align-items:center}
+  .tip p{font-size:.88rem; color:var(--dim); line-height:1.5}
+  .tip code{font-family:"JetBrains Mono",monospace; color:var(--txt); font-size:.86em}
+  .foot-end{text-align:center; font-family:"JetBrains Mono",monospace; font-size:.74rem; color:var(--faint); letter-spacing:.05em}
+  .foot-end b{color:var(--gold)}
+
+  @media(max-width:640px){
+    .wrap{padding:40px 16px 60px}
+    .week{flex-direction:column}
+    .rail{flex-basis:auto; border-right:none; border-bottom:1px solid var(--line); flex-direction:row; align-items:center; gap:14px; padding:14px 18px}
+    .rail .wn{font-size:1.8rem}
+    .rail .wn small{display:inline; margin:0 6px 0 0}
+    .rail .dom{margin-top:0; padding-top:0; margin-left:auto}
+    .rail .wc{display:none}
+    .rail .live{position:static; margin-left:8px}
+    .tp{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">Programme intensif d'été · 2026</div>
+    <h1>Mathématiques<br><em>Première · Spécialité</em></h1>
+    <p class="sub">Tout le programme en 12 semaines, du 6 juin au 1ᵉʳ septembre. Chaque semaine renvoie aux pages exactes de ton manuel.</p>
+    <div class="book">📘 Calé sur le manuel Belin Éducation (Première Spé, 2019) · pages cours, sous-parties &amp; exercices indiquées</div>
+
+    <div class="stats">
+      <div class="stat cd"><b id="cd">—</b> jours restants</div>
+      <div class="stat"><b>11</b> chapitres · <b>12</b> semaines</div>
+      <div class="stat">≈ <b>2 h</b>/jour · 6 j/semaine</div>
+      <div class="stat"><b>3</b> DS blancs + <b>1</b> bac blanc</div>
+    </div>
+
+    <div class="pbar">
+      <div class="phead"><span class="lab">Progression globale</span><span id="pct">0%</span></div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+      <div class="psub">
+        <span id="counts">0 / 0 sous-parties validées</span>
+        <button id="reset">Réinitialiser</button>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="sec-title">Rythme hebdomadaire type</h2>
+    <div class="days">
+      <div class="day"><div class="j">J1</div><div class="nm">Cours</div><div class="ds-">Lire le cours + exemples</div></div>
+      <div class="day"><div class="j">J2</div><div class="nm">Cours + méthodes</div><div class="ds-">Théorèmes, démos clés</div></div>
+      <div class="day"><div class="j">J3</div><div class="nm">Exos faciles</div><div class="ds-">Application directe</div></div>
+      <div class="day"><div class="j">J4</div><div class="nm">Exos moyens</div><div class="ds-">Exos à étapes</div></div>
+      <div class="day"><div class="j">J5</div><div class="nm">Exos type bac</div><div class="ds-">Problèmes complets</div></div>
+      <div class="day"><div class="j">J6</div><div class="nm">Fiche + Python</div><div class="ds-">Synthèse 1 page</div></div>
+      <div class="day rest"><div class="j">J7</div><div class="nm">Repos</div><div class="ds-">Révision flash</div></div>
+    </div>
+  </section>
+
+  <main id="program"></main>
+
+  <footer>
+    <div class="tips">
+      <div class="tip"><h4>↻ Répétition espacée</h4><p>Chaque dimanche : <code>30 min</code> de brouillon chronométré sur 2–3 exercices des semaines précédentes.</p></div>
+      <div class="tip"><h4>🎯 Les 4 jalons</h4><p>DS n°1 fin juin (Ch.2–4) · DS n°2 fin juillet (Ch.5–8) · DS n°3 mi-août (Ch.9–11) · <b style="color:var(--gold-2)">bac blanc</b> fin août.</p></div>
+      <div class="tip"><h4>📕 Dans ton manuel</h4><p>« Entraînement au BAC » <code>p.322</code> · « Corrigés des exercices » <code>p.326</code> · « Vocabulaire ensembliste et logique » <code>p.308</code>.</p></div>
+    </div>
+    <div class="foot-end">06 / 06 / 2026 &nbsp;→&nbsp; 01 / 09 / 2026 &nbsp;·&nbsp; <b>Objectif : prêt pour la Terminale</b></div>
+  </footer>
+
+</div>
+
+<script>
+const DOM={alg:{l:"Algèbre",c:"var(--algebre)"},ana:{l:"Analyse",c:"var(--analyse)"},geo:{l:"Géométrie",c:"var(--geometrie)"},pro:{l:"Probabilités",c:"var(--proba)"},py:{l:"Algorithmique",c:"var(--python)"},rev:{l:"Révisions",c:"var(--revision)"}};
+
+const PHASES=[
+ { ph:"Phase 1", pn:"Juin — Algèbre, dérivation & suites", weeks:[
+   { n:0, express:true, dates:"6 – 7 juin", start:"2026-06-06", end:"2026-06-07", dom:"py",
+     ch:"Chapitre 1 · Mise en route", titre:"Algorithmique & programmation", pg:"p.10",
+     topics:[
+       {t:"Revoir la notion de fonction",p:"11"},
+       {t:"Boucles bornées et non bornées",p:"12"},
+       {t:"L'instruction conditionnelle",p:"14"},
+       {t:"Les listes : définitions",p:"15"},
+       {t:"Définition en compréhension d'une liste",p:"18"}
+     ], note:{k:"tip",t:"Révision express — Python est ton métier. Vise ½ journée, c'est l'échauffement."} },
+   { n:1, dates:"8 – 14 juin", start:"2026-06-08", end:"2026-06-14", dom:"alg",
+     ch:"Chapitre 2", titre:"Fonctions polynômes du second degré", pg:"p.22", exo:"p.42",
+     topics:[
+       {t:"Forme développée et forme canonique",p:"26"},
+       {t:"Variations et représentation graphique",p:"28"},
+       {t:"Équations du second degré",p:"30"},
+       {t:"Factorisation d'un polynôme du 2ⁿᵈ degré",p:"32"},
+       {t:"Signe d'un polynôme du 2ⁿᵈ degré",p:"34"}
+     ], note:{k:"ok",t:"✅ Module d'exos déjà généré : 21 exercices corrigés (★/★★/★★★)."} },
+   { n:2, dates:"15 – 21 juin", start:"2026-06-15", end:"2026-06-21", dom:"ana",
+     ch:"Chapitre 3", titre:"Dérivation — fonctions polynômes", pg:"p.58", exo:"p.76",
+     topics:[
+       {t:"Taux de variation et nombre dérivé",p:"62"},
+       {t:"Tangentes à une courbe et fonction dérivée",p:"64"},
+       {t:"Dérivée d'une fonction polynôme",p:"66"},
+       {t:"Dérivée et sens de variation",p:"68"}
+     ], note:{k:"tip",t:"Pilier du programme : à maîtriser à fond, tout repose dessus en Terminale."} },
+   { n:3, dates:"22 – 28 juin", start:"2026-06-22", end:"2026-06-28", dom:"ana",
+     ch:"Chapitre 4", titre:"Dérivation — fonctions non polynomiales", pg:"p.90", exo:"p.102",
+     topics:[
+       {t:"Dérivées de inverse, racine carrée, valeur absolue",p:"92"},
+       {t:"Dérivées d'un produit et d'un quotient",p:"94"},
+       {t:"Dérivée de x↦g(ax+b) + tableau récap",p:"96"}
+     ], ds:"Ch.2 à 4 — Second degré · Dérivation (polynômes & non polynomiales)" },
+   { n:4, dates:"29 juin – 5 juil.", start:"2026-06-29", end:"2026-07-05", dom:"alg",
+     ch:"Chapitre 5", titre:"Suites numériques", pg:"p.114", exo:"p.132",
+     topics:[
+       {t:"Génération d'une suite de nombres",p:"118"},
+       {t:"Suites arithmétiques",p:"120"},
+       {t:"Suites géométriques",p:"122"}
+     ], note:{k:"py",t:"💻 Python : calcul de termes & recherche de seuil (boucle while)."} },
+ ]},
+ { ph:"Phase 2", pn:"Juillet — Suites, exponentielle, trigonométrie & géométrie", weeks:[
+   { n:5, dates:"6 – 12 juil.", start:"2026-07-06", end:"2026-07-12", dom:"alg",
+     ch:"Chapitre 6", titre:"Comportement d'une suite numérique", pg:"p.146", exo:"p.162",
+     topics:[
+       {t:"Sens de variation d'une suite",p:"150"},
+       {t:"Variation des suites arithmétiques et géométriques",p:"152"},
+       {t:"Limites de suites",p:"154"}
+     ] },
+   { n:6, dates:"13 – 19 juil.", start:"2026-07-13", end:"2026-07-19", dom:"ana",
+     ch:"Chapitre 7", titre:"Fonction exponentielle", pg:"p.172", exo:"p.184",
+     topics:[
+       {t:"Caractérisation de la fonction exponentielle",p:"176"},
+       {t:"Propriétés algébriques — notation eˣ",p:"178"}
+     ], note:{k:"tip",t:"Chapitre court (2 sous-parties) → ajoute des exos type bac et garde du temps pour réviser la dérivation."} },
+   { n:7, dates:"20 – 26 juil.", start:"2026-07-20", end:"2026-07-26", dom:"ana",
+     ch:"Chapitre 8", titre:"Trigonométrie", pg:"p.192", exo:"p.208",
+     topics:[
+       {t:"Cercle trigonométrique",p:"196"},
+       {t:"Cosinus et sinus d'un nombre réel",p:"198"},
+       {t:"Fonctions trigonométriques",p:"200"}
+     ], ds:"Ch.5 à 8 — Suites · Comportement · Exponentielle · Trigonométrie" },
+   { n:8, dates:"27 juil. – 2 août", start:"2026-07-27", end:"2026-08-02", dom:"geo",
+     ch:"Chapitre 9", titre:"Produit scalaire", pg:"p.218", exo:"p.232",
+     topics:[
+       {t:"Norme de vecteurs — critères d'orthogonalité",p:"220"},
+       {t:"Définition du produit scalaire — bilinéarité",p:"222"},
+       {t:"Projeté orthogonal — expression avec un angle",p:"224"}
+     ] },
+ ]},
+ { ph:"Phase 3", pn:"Août → Septembre — Géométrie, probabilités & bac blanc", weeks:[
+   { n:9, dates:"3 – 9 août", start:"2026-08-03", end:"2026-08-09", dom:"geo",
+     ch:"Chapitre 10", titre:"Applications du produit scalaire", pg:"p.244", exo:"p.258",
+     topics:[
+       {t:"Orthogonalité et équations de droites",p:"246"},
+       {t:"Équations de cercle",p:"248"},
+       {t:"Calculs de longueurs et d'angles dans un triangle",p:"250"}
+     ] },
+   { n:10, dates:"10 – 16 août", start:"2026-08-10", end:"2026-08-16", dom:"pro",
+     ch:"Chapitre 11", titre:"Probabilités", pg:"p.268", exo:"p.290",
+     topics:[
+       {t:"Probabilités conditionnelles",p:"272"},
+       {t:"Arbre de probabilités",p:"274"},
+       {t:"Événements indépendants",p:"276"},
+       {t:"Variable aléatoire — loi, espérance",p:"278"},
+       {t:"Variance — écart-type",p:"280"}
+     ], ds:"Ch.9 à 11 — Produit scalaire · Applications · Probabilités",
+     note:{k:"py",t:"💻 Python : simulation d'expériences & fréquences (module random)."} },
+   { n:11, dates:"17 – 23 août", start:"2026-08-17", end:"2026-08-23", dom:"rev",
+     ch:"Semaine de révisions", titre:"Entraînement au BAC + reprise ciblée", pg:"p.322",
+     topics:[
+       {t:"Section « Entraînement au BAC » du manuel",p:"322"},
+       {t:"Reprise des chapitres les plus fragiles",p:"—"},
+       {t:"Refaire les erreurs des 3 DS blancs",p:"—"},
+       {t:"Python approfondi (suites, simulations)",p:"—"}
+     ] },
+   { n:12, dates:"24 – 30 août", start:"2026-08-24", end:"2026-08-30", dom:"rev",
+     ch:"Semaine de révisions", titre:"Bac blanc complet + fiches de synthèse",
+     topics:[
+       {t:"Sujet type bac (4 h, conditions réelles)",p:"—"},
+       {t:"Correction & analyse des erreurs",p:"326"},
+       {t:"Fiches de synthèse — 1 page / chapitre",p:"—"},
+       {t:"Carte mentale du programme complet",p:"—"}
+     ] },
+   { n:0, final:true, dates:"31 août – 1ᵉʳ sept.", start:"2026-08-31", end:"2026-09-01", dom:"rev",
+     ch:"Bilan", titre:"Dernière ligne droite",
+     topics:[
+       {t:"Relecture des 10 fiches de synthèse",p:"—"},
+       {t:"Auto-évaluation : 1 exo flash / chapitre",p:"—"},
+       {t:"Liste finale des formules à mémoriser",p:"—"},
+       {t:"Prêt pour la Terminale ✓",p:"—"}
+     ] },
+ ]},
+];
+
+const prog=document.getElementById('program');
+const now=new Date();
+
+PHASES.forEach(P=>{
+  const sec=document.createElement('section'); sec.className='phase';
+  sec.innerHTML=`<div class="phase-head"><span class="ph">${P.ph}</span><span class="pn">${P.pn}</span></div><div class="phase-rule"></div>`;
+  P.weeks.forEach((w,wi)=>{
+    const dom=DOM[w.dom];
+    const isCur=now>=new Date(w.start+'T00:00:00')&&now<=new Date(w.end+'T23:59:59');
+    const key=w.final?'F':(w.express?'E':w.n);
+    let wnLabel;
+    if(w.final) wnLabel='<small>FIN</small>✦';
+    else if(w.express) wnLabel='<span class="tiny">PRÉ</span>';
+    else wnLabel=`<small>SEM</small>${w.n}`;
+    const art=document.createElement('article');
+    art.className='week'+(isCur?' current':'')+(w.express?' express':'');
+    art.style.setProperty('--dom',dom.c);
+    art.dataset.week=key;
+    art.style.animationDelay=(wi*0.04)+'s';
+    const lis=w.topics.map((t,ti)=>`<li><label><input type="checkbox" data-id="${key}-${ti}"><span class="box"></span><span class="tx">${t.t}</span><span class="tp">${t.p?('p.'+t.p).replace('p.—','—'):''}</span></label></li>`).join('');
+    const pages=`<div class="wpages">${w.pg?`<span>📖 cours ${w.pg}</span>`:''}${w.exo?`<span class="exo">✎ exercices ${w.exo}</span>`:''}</div>`;
+    const note=w.note?`<div class="wnote ${w.note.k}">${w.note.t}</div>`:'';
+    const ds=w.ds?`<div class="ds"><span class="ic">🎯</span><div class="dt"><b>DS blanc</b>${w.ds}</div></div>`:'';
+    const wnClass = w.express ? 'wn' : 'wn';
+    art.innerHTML=`
+      <div class="rail">
+        ${isCur?'<span class="live">en cours</span>':''}
+        <div class="${wnClass}">${wnLabel}</div>
+        <div class="wd">${w.dates}</div>
+        <div class="wc" id="wc-${key}">0 / ${w.topics.length}</div>
+        <div class="dom">${dom.l}</div>
+      </div>
+      <div class="wbody">
+        <div class="ch-no">${w.ch}</div>
+        <h3 class="wtitle">${w.titre}</h3>
+        ${(w.pg||w.exo)?pages:''}
+        <ul class="topics">${lis}</ul>
+        ${note}${ds}
+      </div>`;
+    sec.appendChild(art);
+  });
+  prog.appendChild(sec);
+});
+
+(function(){const t=new Date('2026-09-01T00:00:00');const d=Math.ceil((t-new Date())/86400000);document.getElementById('cd').textContent=d>0?d:'0';})();
+
+const mem={};
+const HAS=!!(window.storage&&window.storage.get);
+async function load(){if(HAS){try{const r=await window.storage.get('planBelinProgress');return r?JSON.parse(r.value):{};}catch(e){return {};}}return mem.p?JSON.parse(mem.p):{};}
+async function save(o){const s=JSON.stringify(o);if(HAS){try{await window.storage.set('planBelinProgress',s);return;}catch(e){}}mem.p=s;}
+
+let state={};
+const inputs=[...document.querySelectorAll('input[data-id]')];
+function refresh(){
+  let total=inputs.length,done=0;const pw={};
+  inputs.forEach(i=>{const wk=i.dataset.id.split('-')[0];pw[wk]=pw[wk]||{d:0,t:0};pw[wk].t++;if(i.checked){done++;pw[wk].d++;}});
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('pct').textContent=pct+'%';
+  document.getElementById('fill').style.width=pct+'%';
+  document.getElementById('counts').textContent=`${done} / ${total} sous-parties validées`;
+  Object.entries(pw).forEach(([wk,o])=>{const el=document.getElementById('wc-'+wk);if(el)el.textContent=`${o.d} / ${o.t}`;const c=document.querySelector(`.week[data-week="${wk}"]`);if(c)c.classList.toggle('done',o.d===o.t&&o.t>0);});
+}
+inputs.forEach(i=>i.addEventListener('change',()=>{state[i.dataset.id]=i.checked;if(!i.checked)delete state[i.dataset.id];save(state);refresh();}));
+document.getElementById('reset').addEventListener('click',()=>{if(!confirm('Réinitialiser toute la progression ?'))return;state={};inputs.forEach(i=>i.checked=false);save(state);refresh();});
+(async function(){state=await load();inputs.forEach(i=>{if(state[i.dataset.id])i.checked=true;});refresh();})();
+</script>
+</body>
+</html>
