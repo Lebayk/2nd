@@ -26,3 +26,8 @@ Thumbs.db
 # vite / ts
 node_modules/.tmp
 *.tsbuildinfo
+.claude
+.legacy
+
+# server data (state persisté localement)
+data/

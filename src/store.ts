@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import { serverStorage } from './lib/serverStorage'
 import { ALL_TOPIC_IDS, CHAPTER_WEEKS, ALL_WEEKS } from './data/curriculum'
 import { ACHIEVEMENTS } from './lib/achievements'
 import { levelFromXp, XP } from './lib/levels'
@@ -324,6 +325,7 @@ export const useStore = create<StoreState>()(
     },
     {
       name: 'maths-premiere-v2',
+      storage: createJSONStorage(() => serverStorage),
       version: 1,
       partialize: ({ celebrations, ...rest }) => rest,
     },
